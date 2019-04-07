@@ -7,8 +7,13 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" />
-        <Typography component="h2" variant="h2" gutterBottom>Pictionary</Typography>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
+        />
+        <Typography component="h2" variant="h2" gutterBottom>
+          Pictionary
+        </Typography>
         <Button variant="contained" color="primary">
           Hello World
         </Button>
