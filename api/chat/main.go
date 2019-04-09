@@ -29,6 +29,8 @@ type Message struct {
 	Action  string `json:"action"`
 	Event   string `json:"event"`
 	Message string `json:"message"`
+	GameID  string `json:"game-id"`
+	Name    string `json:"name"`
 }
 
 // Handler is our lambda handler invoked by the `lambda.Start` function call
@@ -40,9 +42,9 @@ func Handler(ctx context.Context, req events.APIGatewayWebsocketProxyRequest) (R
 	}
 	message := &Message{}
 	json.Unmarshal([]byte(req.Body), message)
-
+	fmt.Printf("%+v", req)
 	if message.Event == "join" {
-		return h.join(ctx, req, message.Message)
+		return h.join(ctx, req, message)
 	} else if message.Event == "broadcast" {
 		return h.broadcast(ctx, req, message.Message)
 	}
@@ -50,32 +52,28 @@ func Handler(ctx context.Context, req events.APIGatewayWebsocketProxyRequest) (R
 	return Response{}, fmt.Errorf("connection handler: do not understand event type %s", req.RequestContext.EventType)
 }
 
-func (h *handler) join(ctx context.Context, req events.APIGatewayWebsocketProxyRequest, gameID string) (Response, error) {
-	_, err := h.ddb.UpdateItem(&dynamodb.UpdateItemInput{
-		Key: map[string]*dynamodb.AttributeValue{
+// {"action": "chat", "event": "join", "message": "hello", "game-id": "mygameid", "name": "chirashi"}
+func (h *handler) join(ctx context.Context, req events.APIGatewayWebsocketProxyRequest, message *Message) (Response, error) {
+	_, err := h.ddb.PutItem(&dynamodb.PutItemInput{
+		Item: map[string]*dynamodb.AttributeValue{
 			"PK": {
-				S: aws.String("game-id"),
+				S: aws.String("game-id:connection-id"),
 			},
 			"SK": {
-				S: aws.String(gameID),
+				S: aws.String(fmt.Sprintf("%s:%s", message.GameID, req.RequestContext.ConnectionID)),
 			},
-		},
-		AttributeUpdates: map[string]*dynamodb.AttributeValueUpdate{
-			"players": &dynamodb.AttributeValueUpdate{
-				Action: aws.String("ADD"),
-				Value: &dynamodb.AttributeValue{
-					SS: []*string{aws.String(req.RequestContext.ConnectionID)},
-				},
+			"Name": {
+				S: aws.String(message.Name),
 			},
 		},
 		TableName: aws.String(tableName),
 	})
 
 	if err != nil {
-		return Response{}, fmt.Errorf("could not join game-id %s: %s", gameID, err)
+		return Response{}, fmt.Errorf("could not join game-id %s: %s", message.GameID, err)
 	}
 
-	return Response{StatusCode: 200, Body: fmt.Sprintf("joined game id %s", gameID)}, nil
+	return Response{StatusCode: 200, Body: fmt.Sprintf("joined game id %s as %s", message.GameID, message.Name)}, nil
 }
 
 func (h *handler) broadcast(ctx context.Context, req events.APIGatewayWebsocketProxyRequest, message string) (Response, error) {

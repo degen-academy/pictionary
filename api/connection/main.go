@@ -65,6 +65,7 @@ func (h *handler) connect(ctx context.Context, req events.APIGatewayWebsocketPro
 }
 
 func (h *handler) disconnect(ctx context.Context, req events.APIGatewayWebsocketProxyRequest) (Response, error) {
+
 	_, err := h.ddb.DeleteItem(&dynamodb.DeleteItemInput{
 		Key: map[string]*dynamodb.AttributeValue{
 			"PK": {
