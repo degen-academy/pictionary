@@ -30,6 +30,7 @@
     "aws/credentials/endpointcreds",
     "aws/credentials/processcreds",
     "aws/credentials/stscreds",
+    "aws/crr",
     "aws/csm",
     "aws/defaults",
     "aws/ec2metadata",
@@ -51,6 +52,8 @@
     "private/protocol/restjson",
     "private/protocol/xml/xmlutil",
     "service/apigatewaymanagementapi",
+    "service/dynamodb",
+    "service/dynamodb/dynamodbiface",
     "service/sts",
   ]
   pruneopts = ""
@@ -73,6 +76,8 @@
     "github.com/aws/aws-sdk-go/aws",
     "github.com/aws/aws-sdk-go/aws/session",
     "github.com/aws/aws-sdk-go/service/apigatewaymanagementapi",
+    "github.com/aws/aws-sdk-go/service/dynamodb",
+    "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

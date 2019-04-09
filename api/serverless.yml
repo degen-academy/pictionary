@@ -1,17 +1,4 @@
-# Welcome to Serverless!
-#
-# This file is the main config file for your service.
-# It's very minimal at this point and uses default values.
-# You can always add more config options for more control.
-# We've included some commented out config examples here.
-# Just uncomment any of them to get that config option.
-#
-# For full config options, check the docs:
-#    docs.serverless.com
-#
-# Happy Coding!
-
-service: api # NOTE: update this with your service name
+service: pictionary-websocket-api 
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -26,21 +13,22 @@ provider:
   stage: dev
   region: us-west-2
 
-# you can add statements to the Lambda function's IAM Role here
-#  iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:ListBucket"
-#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
-#      Resource:
-#        Fn::Join:
-#          - ""
-#          - - "arn:aws:s3:::"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:PutItem"
+        - "dynamodb:DeleteItem"
+        - "dynamodb:UpdateItem"
+      Resource: arn:aws:dynamodb:us-west-2:762295491414:table/pictionary
+    # - Effect: "Allow"
+    #   Action:
+    #     - "s3:PutObject"
+    #   Resource:
+    #     Fn::Join:
+    #       - ""
+    #       - - "arn:aws:s3:::"
+    #         - "Ref" : "ServerlessDeploymentBucket"
+    #         - "/*"
 
 # you can define service wide environment variables here
 #  environment:
@@ -102,9 +90,9 @@ functions:
 #       Tags: 
 #         - Key: project
 #           Value: pictionary
-#       # TimeToLiveSpecification: 
-#       #   AttributeName: ttl
-#       #   Enabled: false
+      # TimeToLiveSpecification: 
+      #   AttributeName: ttl
+      #   Enabled: false
 #   Outputs:
 #       NewOutput:
 #         Description: "Description for the output"
