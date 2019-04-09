@@ -1,0 +1,7 @@
+{
+  "requestContext": {
+    "connectionId": "asdf",
+    "connectedAt": 0,
+  },
+  "body": "{\"action\": \"chat\", \"message\": \"hello\", \"event\": \"join\", \"name\": \"chirashi\", \"game-id\": \"gameid\"}"
+}
