@@ -112,12 +112,14 @@ func (h *handler) broadcast(ctx context.Context, req events.APIGatewayWebsocketP
 		}, fmt.Errorf("failed to broadcast to game-id %s: %s", message.GameID, err)
 	}
 
+	broadcasted := []string{}
 	for _, connection := range res.Items {
 		var s string
 		dynamodbattribute.NewDecoder().Decode(connection["SK"], &s)
 
 		connectionID := strings.Split(s, ":")[1]
-		h.agw.ClientInfo.Endpoint = "https://noc8wkkta6.execute-api.us-west-2.amazonaws.com/prod"
+
+		h.agw.ClientInfo.Endpoint = "https://noc8wkkta6.execute-api.us-west-2.amazonaws.com/dev"
 		connectionsReq, _ := h.agw.PostToConnectionRequest(&apigatewaymanagementapi.PostToConnectionInput{
 			ConnectionId: aws.String(connectionID),
 			Data:         []byte("hello"),
@@ -126,10 +128,12 @@ func (h *handler) broadcast(ctx context.Context, req events.APIGatewayWebsocketP
 		err := connectionsReq.Send()
 		if err != nil {
 			fmt.Println(err)
+		} else {
+			broadcasted = append(broadcasted, connectionID)
 		}
 	}
 
-	return Response{StatusCode: 200, Body: "broadcasted"}, nil
+	return Response{StatusCode: 200, Body: fmt.Sprintf("broadcasted to %+v", broadcasted)}, nil
 }
 
 func main() {
