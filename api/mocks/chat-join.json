@@ -1,7 +1,36 @@
 {
+  "body": "{\"action\": \"chat\", \"name\": \"chirashi\", \"event\": \"join\", \"game-id\": \"my-game-id\"}",
+  "isBase64Encoded": false,
   "requestContext": {
-    "connectionId": "asdf",
-    "connectedAt": 0,
-  },
-  "body": "{\"action\": \"chat\", \"message\": \"hello\", \"event\": \"join\", \"name\": \"chirashi\", \"game-id\": \"gameid\"}"
+    "apiId": "*",
+    "authorizer": "",
+    "connectedAt": 1554881118316,
+    "connectionId": "X6UOvf6FPHcCIVg=",
+    "domainName": "*.execute-api.us-west-2.amazonaws.com",
+    "error": "",
+    "eventType": "MESSAGE",
+    "extendedRequestId": "X6VGBHjkvHcF1Zw=",
+    "identity": {
+      "accessKey": null,
+      "accountId": null,
+      "caller": null,
+      "cognitoAuthenticationProvider": null,
+      "cognitoAuthenticationType": null,
+      "cognitoIdentityId": null,
+      "cognitoIdentityPoolId": null,
+      "sourceIp": "136.24.111.175",
+      "user": null,
+      "userAgent": null,
+      "userArn": null
+    },
+    "integrationLatency": "",
+    "messageDirection": "IN",
+    "messageId": "X6VGBcBcPHcCIVg=",
+    "requestId": "X6VGBHjkvHcF1Zw=",
+    "requestTime": "10/Apr/2019:07:31:12 +0000",
+    "requestTimeEpoch": 1554881472149,
+    "routeKey": "chat",
+    "stage": "dev",
+    "status": ""
+  }
 }

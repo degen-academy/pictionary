@@ -19,6 +19,7 @@ provider:
         - "dynamodb:PutItem"
         - "dynamodb:DeleteItem"
         - "dynamodb:UpdateItem"
+        - "dynamodb:Query"
       Resource: arn:aws:dynamodb:us-west-2:762295491414:table/pictionary
     # - Effect: "Allow"
     #   Action:
