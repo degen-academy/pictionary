@@ -1,7 +1,7 @@
 import React from "react";
 import { TextField } from "@material-ui/core";
 
-class OutlinedTextFields extends React.Component {
+class OutlinedTextFields2 extends React.Component {
   state = {
     name: "Cat in the Hat",
     age: "",
@@ -30,4 +30,4 @@ class OutlinedTextFields extends React.Component {
   }
 }
 
-export default OutlinedTextFields;
+export default OutlinedTextFields2;
