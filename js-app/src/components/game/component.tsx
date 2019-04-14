@@ -3,6 +3,16 @@ import { Button } from "@material-ui/core";
 import firebase from "firebase";
 import { RouteComponentProps } from "react-router";
 
+// hard-coded players
+const players = [
+    {
+        displayName: "hello"
+    },
+    {
+        displayName: "mynameis"
+    }
+]
+
 interface MatchParams {
   gameID: string;
 }

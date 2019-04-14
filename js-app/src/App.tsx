@@ -32,7 +32,7 @@ class App extends Component {
 
         <Router>
           <Route exact path="/" component={Login} />
-          <Route path="/:gameID" component={GameLobby} />
+          <Route path="/pictionary/:gameID" component={GameLobby} />
         </Router>
 
 
