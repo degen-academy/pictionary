@@ -23,16 +23,19 @@ interface Props extends RouteComponentProps<MatchParams> {
 class GameLobby extends React.Component<Props> {
     render() {
         const currentUser = firebase.auth().currentUser;
-        if (!currentUser) {
-            return <div>"please log in"</div>
+        var message = <div>"please log in"</div>;
+        if (currentUser) {
+            message = <h2>Joined the lobby as "{currentUser.displayName}"</h2>;
         }
+
         return (
         <div>
             <h1>Game ID: {this.props.match.params.gameID}</h1>
-            <h2>Joined the lobby as "{currentUser.displayName}"</h2>
+            {message}
             <Button variant="contained" color="primary">
                 Start Game
             </Button>
+
         </div>
         );
     }
