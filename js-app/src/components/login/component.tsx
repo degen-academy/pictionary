@@ -13,7 +13,7 @@ interface Props extends RouteComponentProps<MatchParams> {
 }
 class Login extends React.Component<Props> {
   state = {
-    displayName: "your name",
+    displayName: "kiminonawa",
     gameID: "new lobby",
     isLoading: false,
   };
@@ -87,7 +87,7 @@ class Login extends React.Component<Props> {
           .then(() => {
             this.setState({isLoading: false});
             // redirect user to game lobby URL after login succeeds
-            this.props.history.push(`/${this.state.gameID}`)
+            this.props.history.push(`${process.env.PUBLIC_URL}/${this.state.gameID}`)
           });
         }
       });

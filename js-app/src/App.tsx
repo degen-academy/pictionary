@@ -30,9 +30,9 @@ class App extends Component {
           Pictionary
         </Typography>
 
-        <Router>
+        <Router basename={process.env.PUBLIC_URL}>
           <Route exact path="/" component={Login} />
-          <Route path="/pictionary/:gameID" component={GameLobby} />
+          <Route path="/:gameID" component={GameLobby} />
         </Router>
 
 
