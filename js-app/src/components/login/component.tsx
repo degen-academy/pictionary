@@ -1,42 +1,36 @@
 import React from "react";
 import { TextField, Button } from "@material-ui/core";
 import firebase from "firebase";
+import { RouteComponentProps } from "react-router";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyC8GlZSkhT_-jVM7pv_5IulaL4PUWfw8ys",
-  authDomain: "pictionary-c2ea2.firebaseapp.com",
-  databaseURL: "https://pictionary-c2ea2.firebaseio.com",
-  projectId: "pictionary-c2ea2",
-  storageBucket: "pictionary-c2ea2.appspot.com",
-  messagingSenderId: "1067811636183"
-};
+interface MatchParams {
+  name: string;
+}
 
-class OutlinedTextFields extends React.Component {
+interface Props extends RouteComponentProps<MatchParams> {
+  gameID: string;
+}
+class Login extends React.Component<Props> {
   state = {
-    displayName: "foo",
-    lobbyName: "new lobby"
+    displayName: "your name",
+    gameID: "new lobby"
   };
 
-  constructor() {
-    super({});
+  constructor(props: Props) {
+    super(props);
 
-    // TODO: firebase stuff should be in its own component, probably a react hook wrapping children components
-    firebase.initializeApp(firebaseConfig);
-
+    console.log(this.props.match.params);
     // sign out of any previous sessions
     firebase.auth().signOut();
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         console.log(
-          `joined "${this.state.lobbyName}" as "${this.state.displayName}"`
+          `joined "${this.state.gameID}" as "${this.state.displayName}"`
         );
       }
     });
   }
 
-  componentWillUnmount() {
-    firebase.auth().signOut();
-  }
 
   render() {
     return (
@@ -53,14 +47,14 @@ class OutlinedTextFields extends React.Component {
           <TextField
             id="outlined-uncontrolled"
             label="Lobby Name"
-            defaultValue={this.state.lobbyName}
+            defaultValue={this.state.gameID}
             margin="normal"
             variant="outlined"
             onChange={this.handleChange("lobbyName")}
           />
         </form>
         <Button variant="contained" color="primary" onClick={this.login}>
-          Log in
+          Join Game
         </Button>
       </div>
     );
@@ -83,13 +77,14 @@ class OutlinedTextFields extends React.Component {
         if (user) {
           user.updateProfile({
             displayName: this.state.displayName
+          })
+          .then(() => {
+            // redirect user to game lobby URL after login succeeds
+            this.props.history.push(`/${this.state.gameID}`)
           });
         }
-      })
-      .catch(function(error) {
-        console.log(error);
       });
   };
 }
 
-export default OutlinedTextFields;
+export default Login;
