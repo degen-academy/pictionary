@@ -86,8 +86,9 @@ class Login extends React.Component<Props> {
           })
           .then(() => {
             this.setState({isLoading: false});
+            var gameID2 = this.state.gameID.replace(" ", "-");
             // redirect user to game lobby URL after login succeeds
-            this.props.history.push(`/${this.state.gameID}`)
+            this.props.history.push(`/${gameID2}`)
           });
         }
       });
