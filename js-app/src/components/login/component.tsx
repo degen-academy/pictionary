@@ -2,6 +2,7 @@ import React from "react";
 import { TextField, Button } from "@material-ui/core";
 import firebase from "firebase";
 import { RouteComponentProps } from "react-router";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 interface MatchParams {
   name: string;
@@ -13,7 +14,8 @@ interface Props extends RouteComponentProps<MatchParams> {
 class Login extends React.Component<Props> {
   state = {
     displayName: "your name",
-    gameID: "new lobby"
+    gameID: "new lobby",
+    isLoading: false,
   };
 
   constructor(props: Props) {
@@ -56,6 +58,9 @@ class Login extends React.Component<Props> {
         <Button variant="contained" color="primary" onClick={this.login}>
           Join Game
         </Button>
+        <div>
+          {this.state.isLoading ? <CircularProgress /> : null}
+        </div>
       </div>
     );
   }
@@ -69,6 +74,7 @@ class Login extends React.Component<Props> {
   };
 
   private login = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    this.setState({isLoading: true});
     firebase
       .auth()
       .signInAnonymously()
@@ -79,6 +85,7 @@ class Login extends React.Component<Props> {
             displayName: this.state.displayName
           })
           .then(() => {
+            this.setState({isLoading: false});
             // redirect user to game lobby URL after login succeeds
             this.props.history.push(`/${this.state.gameID}`)
           });
