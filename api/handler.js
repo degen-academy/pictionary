@@ -4,6 +4,9 @@ const AWS = require('aws-sdk');
 
 const TABLE = 'pictionary';
 const dynamodb = new AWS.DynamoDB();
+const apigatewaymanagementapi = new AWS.ApiGatewayManagementApi({
+  endpoint: "https://auxhu82pyl.execute-api.us-west-2.amazonaws.com/dev"
+});
 
 module.exports.connect = async event => ({
   statusCode: 200,
@@ -22,7 +25,70 @@ module.exports.disconnect = async event => ({
   }),
 });
 
-// {"action": "join", "message": "hello", "game_id": "mygameid", "name": "chirashi"}
+// {"action": "send_message", "message": "hello", "game_id": "mygameid", "name": "chirashi"}
+module.exports.send_message = async event => {
+  let _parsed;
+  try {
+    _parsed = JSON.parse(event.body);
+  } catch (err) {
+    console.error(`Could not parse requested JSON ${event.body}: ${err.stack}`);
+    return {
+      statusCode: 500,
+      error: `Could not parse requested JSON: ${err.stack}`
+    };
+  }
+  const { message, game_id } = _parsed;
+  var params = {
+    ExpressionAttributeValues: {
+      ":v1": {
+        S: "game_id:connection_id"
+      },
+      ":gid": {
+        S: game_id,
+      }
+    },
+    KeyConditionExpression: "PK = :v1 and begins_with(SK, :gid)",
+    TableName: TABLE
+  };
+
+  var data;
+  try {
+    data = await dynamodb.query(params).promise();
+  } catch (error) {
+    console.log(error);
+    return {
+      statusCode: 400,
+      error: "could not send message"
+    };
+  }
+
+  await Promise.all(
+    data.Items.map(async player => {
+      const connectionId = player.SK.S.split(':')[1];
+
+      if (connectionId === event.requestContext.connectionId) {
+        return;
+      }
+
+      const params = {
+        Data: message || '',
+        ConnectionId: connectionId
+      }
+
+      try {
+        await apigatewaymanagementapi.postToConnection(params).promise();
+      } catch(error) {
+        console.error(`failed to post to connection ${connectionId}, removing...`)
+        // TODO: remove item from dynamodb
+      }
+    })
+  )
+  return {
+    statusCode: 200
+  }
+};
+
+// {"action": "join", "game_id": "mygameid", "name": "chirashi"}
 module.exports.join = async (event) => {
   let _parsed;
   try {
@@ -42,12 +108,12 @@ module.exports.join = async (event) => {
         S: 'game_id:connection_id',
       },
       SK: {
-        S: `${game_id}:${connectionId},`
+        S: `${game_id}:${connectionId}`
       },
-      Name: {
+      name: {
         S: `${name}`
       },
-      GameID: {
+      game_id: {
         S: `${game_id}`
       }
     },

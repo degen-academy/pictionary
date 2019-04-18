@@ -1,0 +1,32 @@
+{
+    "body": "{\"action\": \"send_message\", \"game_id\": \"mygameid\", \"name\": \"chirashi\", \"message\": \"hello\"}",
+    "isBase64Encoded": false,
+    "requestContext": {
+        "apiId": "auxhu82pyl",
+        "connectedAt": 1555565024007,
+        "connectionId": "YUZ7AeojPHcCJIg=",
+        "domainName": "auxhu82pyl.execute-api.us-west-2.amazonaws.com",
+        "eventType": "MESSAGE",
+        "extendedRequestId": "YUaCSHhTvHcF_-A=",
+        "identity": {
+        "accessKey": null,
+        "accountId": null,
+        "caller": null,
+        "cognitoAuthenticationProvider": null,
+        "cognitoAuthenticationType": null,
+        "cognitoIdentityId": null,
+        "cognitoIdentityPoolId": null,
+        "sourceIp": "1.1.1.1",
+        "user": null,
+        "userAgent": null,
+        "userArn": null
+        },
+        "messageDirection": "IN",
+        "messageId": "YUaCSepXvHcCJIg=",
+        "requestId": "YUaCSHhTvHcF_-A=",
+        "requestTime": "18/Apr/2019:05:24:30 +0000",
+        "requestTimeEpoch": 1555565070662,
+        "routeKey": "join",
+        "stage": "dev"
+    }
+}
