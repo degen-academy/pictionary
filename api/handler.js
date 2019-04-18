@@ -22,16 +22,34 @@ module.exports.disconnect = async event => ({
   }),
 });
 
-
+// {"action": "join", "message": "hello", "game_id": "mygameid", "name": "chirashi"}
 module.exports.join = async (event) => {
+  let _parsed;
+  try {
+    _parsed = JSON.parse(event.body);
+  } catch (err) {
+    console.error(`Could not parse requested JSON ${event.body}: ${err.stack}`);
+    return {
+      statusCode: 500,
+      error: `Could not parse requested JSON: ${err.stack}`
+    };
+  }
+  const { name, game_id } = _parsed;
+  const connectionId = event.requestContext.connectionId;
   const params = {
     Item: {
       PK: {
-        S: 'connection-id',
+        S: 'game_id:connection_id',
       },
       SK: {
-        S: event.requestContext.connectionId,
+        S: `${game_id}:${connectionId},`
       },
+      Name: {
+        S: `${name}`
+      },
+      GameID: {
+        S: `${game_id}`
+      }
     },
     TableName: TABLE,
   };

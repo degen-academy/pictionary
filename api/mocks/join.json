@@ -1,5 +1,5 @@
 {
-    "body": "{\"action\": \"join\"}",
+    "body": "{\"action\": \"join\", \"game_id\": \"mygameid\", \"name\": \"chirashi\"}",
     "isBase64Encoded": false,
     "requestContext": {
         "apiId": "auxhu82pyl",
