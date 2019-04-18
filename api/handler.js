@@ -27,6 +27,7 @@ module.exports.disconnect = async event => ({
 
 // {"action": "send_message", "message": "hello", "game_id": "mygameid", "name": "chirashi"}
 module.exports.send_message = async event => {
+  // TODO: only allow sends on rooms you're in
   let _parsed;
   try {
     _parsed = JSON.parse(event.body);

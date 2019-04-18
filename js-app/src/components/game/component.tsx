@@ -21,11 +21,33 @@ interface Props extends RouteComponentProps<MatchParams> {
 }
 
 class GameLobby extends React.Component<Props> {
-    render() {
+    state = {
+        displayName: "",
+    }
+    socket: WebSocket = new WebSocket('wss://auxhu82pyl.execute-api.us-west-2.amazonaws.com/dev/');
+    constructor(props: Props) {
+        super(props);
         const currentUser = firebase.auth().currentUser;
+        if (currentUser === null) {
+            return;
+        }
+        const displayName = currentUser.displayName || '';
+    
+        this.socket.onopen = () => {
+            this.socket.send(JSON.stringify({
+                action: "join",
+                game_id: this.props.match.params.gameID,
+                name: displayName,
+            }))
+            this.socket.addEventListener('message', this.messageHandler);
+        }
+
+        this.state = { displayName }
+    }
+    render() {;
         var message = <div>"please log in"</div>;
-        if (currentUser) {
-            message = <h2>Joined the lobby as "{currentUser.displayName}"</h2>;
+        if (this.state.displayName !== '') {
+            message = <h2>Joined the lobby as "{this.state.displayName}"</h2>;
         }
 
         return (
@@ -39,6 +61,11 @@ class GameLobby extends React.Component<Props> {
         </div>
         );
     }
+   
+
+    private messageHandler = (e: MessageEvent) => {
+        console.log(e);
+    };
 }
 
 export default GameLobby;
