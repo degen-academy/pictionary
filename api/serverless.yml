@@ -60,6 +60,15 @@ functions:
           route: $disconnect
   join:
     handler: handler.join
+    events:
+      - websocket:
+          route: join
+          routeResponseSelectionExpression: $default
+  default:
+    handler: handler.disconnect
+    events:
+      - websocket:
+          route: $default
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
