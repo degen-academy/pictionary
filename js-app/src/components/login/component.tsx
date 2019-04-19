@@ -55,6 +55,14 @@ class Login extends React.Component<Props> {
             onChange={this.handleChange("lobbyName")}
           />
         </form>
+        <img src="https://i.imgur.com/hLul2fK.png" alt="avatar 1" width="150" height="150"></img>
+        <img src="https://i.imgur.com/jzA7tpo.png" alt="avatar 2" width="150" height="150"></img>
+        <img src="https://i.imgur.com/HuW7c4c.png" alt="avatar 3" width="150" height="150"></img>
+        <img src="https://i.imgur.com/uSx99Aq.jpg" alt="avatar 4" width="150" height="150"></img>
+        <img src="https://i.imgur.com/YzbCFFQ.jpg" alt="avatar 5" width="150" height="150"></img>
+        <img src="https://i.imgur.com/tmvqlro.jpg" alt="avatar 6" width="150" height="150"></img>
+        <img src="https://i.imgur.com/uvWszgp.png" alt="avatar 7" width="150" height="150"></img>
+        <img src="https://i.imgur.com/IRRw6QW.jpg" alt="avatar 8" width="150" height="150"></img>
         <Button variant="contained" color="primary" onClick={this.login}>
           Join Game
         </Button>
