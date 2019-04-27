@@ -11,15 +11,21 @@ interface Props extends RouteComponentProps<MatchParams> {
     displayName: string;
 }
 
-class GameLobby extends React.Component<Props> {
-    state = {
-        displayName: "",
-    }
+interface State {
+    displayName: string;
+    messageHistory: string[];
+}
+
+class GameLobby extends React.Component<Props, State> {
+
     gameAPI: GameAPI;
     chatInput: React.RefObject<HTMLInputElement>;
     constructor(props: Props) {
         super(props);
-        this.state.displayName = this.props.location.state;
+        this.state = {
+            displayName: this.props.location.state,
+            messageHistory: ["hello"]
+        }
         this.gameAPI = new GameAPI({
             gameID: this.props.match.params.gameID,
             displayName: this.state.displayName,
@@ -36,11 +42,15 @@ class GameLobby extends React.Component<Props> {
 
         const message = <h2>Joined the lobby as "{displayName}"</h2>;
 
+        const h = this.state.messageHistory.map(message => {
+           return <div>{message}</div>
+        })
+        console.log(h)
+
         return (
         <div>
             <div>
             <h1>Game ID: {this.props.match.params.gameID}</h1>
-            {message}
             <Button variant="contained" color="primary">
                 Start Game
             </Button>
@@ -59,6 +69,8 @@ class GameLobby extends React.Component<Props> {
             <Button variant="contained" color="primary" onClick={this.sendMessage}>
                 Send
             </Button>
+            {h}
+
             </div>
 
         </div>
@@ -70,17 +82,26 @@ class GameLobby extends React.Component<Props> {
         if (event.keyCode === 13) {
             this.sendMessage();
         }
+
     }
 
     private sendMessage = () => {
-        const text = this.chatInput.current ? this.chatInput.current.value : "";
+        if (!this.chatInput.current) {
+            return;
+        }
+        const text = this.chatInput.current.value;
         if (text.length > 0) {
             this.gameAPI.sendMessage(text);
+            this.chatInput.current.value = '';
         }
     }
 
-    private onReceiveMessage = (ev: MessageEvent) => {
-        console.log(event);
+
+    private onReceiveMessage = (event: MessageEvent) => {
+        console.log(event.data);
+        this.setState((prev:State) => ({
+            messageHistory: [...prev.messageHistory, event.data]
+        }))
     }
 }
 
