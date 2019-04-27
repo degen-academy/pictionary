@@ -17,6 +17,7 @@ provider:
         - "dynamodb:PutItem"
         - "dynamodb:DeleteItem"
         - "dynamodb:UpdateItem"
+        - "dynamodb:GetItem"
         - "dynamodb:Query"
       Resource: arn:aws:dynamodb:us-west-2:762295491414:table/pictionary
 #  iamRoleStatements:

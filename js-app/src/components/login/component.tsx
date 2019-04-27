@@ -1,8 +1,8 @@
 import React from "react";
 import { TextField, Button } from "@material-ui/core";
-import firebase from "firebase";
 import { RouteComponentProps } from "react-router";
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { Link } from "react-router-dom";
 
 interface MatchParams {
   name: string;
@@ -17,22 +17,6 @@ class Login extends React.Component<Props> {
     gameID: "new lobby",
     isLoading: false,
   };
-
-  constructor(props: Props) {
-    super(props);
-
-    console.log(this.props.match.params);
-    // sign out of any previous sessions
-    firebase.auth().signOut();
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        console.log(
-          `joined "${this.state.gameID}" as "${this.state.displayName}"`
-        );
-      }
-    });
-  }
-
 
   render() {
     return (
@@ -55,9 +39,15 @@ class Login extends React.Component<Props> {
             onChange={this.handleChange("lobbyName")}
           />
         </form>
-        <Button variant="contained" color="primary" onClick={this.login}>
-          Join Game
-        </Button>
+        <Link to={{
+          pathname: `/${this.state.gameID.replace(" ", "-")}`,
+          state: this.state.displayName,
+        }}>
+          <Button variant="contained" color="primary">
+            Join Game
+          </Button>
+        </Link>
+
         <div>
           {this.state.isLoading ? <CircularProgress /> : null}
         </div>
@@ -73,26 +63,6 @@ class Login extends React.Component<Props> {
     });
   };
 
-  private login = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    this.setState({isLoading: true});
-    firebase
-      .auth()
-      .signInAnonymously()
-      .then(userCredential => {
-        const user = userCredential.user;
-        if (user) {
-          user.updateProfile({
-            displayName: this.state.displayName
-          })
-          .then(() => {
-            this.setState({isLoading: false});
-            var gameID = this.state.gameID.replace(" ", "-");
-            // redirect user to game lobby URL after login succeeds
-            this.props.history.push(`/${gameID}`)
-          });
-        }
-      });
-  };
 }
 
 export default Login;
