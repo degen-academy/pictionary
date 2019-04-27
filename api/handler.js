@@ -37,7 +37,7 @@ module.exports.send_message = async event => {
       error: `Could not parse requested JSON: ${err.stack}`
     };
   }
-  const { message, game_id } = _parsed;
+  const { message, game_id, name } = _parsed;
   var params = {
     ExpressionAttributeValues: {
       ":v1": {
@@ -70,8 +70,12 @@ module.exports.send_message = async event => {
         return;
       }
 
+      payload = {
+        name,
+        message,
+      }
       const params = {
-        Data: message || '',
+        Data: JSON.stringify(payload),
         ConnectionId: connectionId
       }
 
