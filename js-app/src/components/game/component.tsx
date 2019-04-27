@@ -1,18 +1,7 @@
 import React from "react";
 import { Button, TextField } from "@material-ui/core";
 import { RouteComponentProps } from "react-router";
-import { string } from "prop-types";
-import { join } from "path";
-
-// hard-coded players
-const players = [
-    {
-        displayName: "hello"
-    },
-    {
-        displayName: "mynameis"
-    }
-]
+import GameAPI from "../../api/gameAPI";
 
 interface MatchParams {
   gameID: string;
@@ -26,28 +15,16 @@ class GameLobby extends React.Component<Props> {
     state = {
         displayName: "",
     }
-    socket:WebSocket;
-    
+    gameAPI: GameAPI;
+    chatInput: React.RefObject<HTMLInputElement>;
     constructor(props: Props) {
         super(props);
-
         this.state.displayName = this.props.location.state;
-
-        const socket = new WebSocket('wss://auxhu82pyl.execute-api.us-west-2.amazonaws.com/dev');
-        socket.onopen = () => {
-            const message = {
-                action: "join",
-                game_id: this.props.match.params.gameID,
-                name: this.state.displayName,
-            }
-            socket.send(JSON.stringify(message));
-        }
-
-        socket.onmessage = (event) => {
-            console.log(event);
-        }
-        this.socket = socket;
-
+        this.gameAPI = new GameAPI({
+            gameID: this.props.match.params.gameID,
+            displayName: this.state.displayName
+        });
+        this.chatInput = React.createRef<HTMLInputElement>();
     }
 
     render() {
@@ -66,17 +43,20 @@ class GameLobby extends React.Component<Props> {
             <Button variant="contained" color="primary">
                 Start Game
             </Button>
-            <TextField
-            id="outlined-uncontrolled"
-            label="chat"
-            margin="normal"
-            variant="outlined"
-            />
+
             </div>
             <br />
             <div>
+            <TextField
+                inputRef={this.chatInput}
+                id="chat-input"
+                label="chat"
+                margin="normal"
+                variant="outlined"
+                onKeyDown={this.handleKeyDown}
+            />
             <Button variant="contained" color="primary" onClick={this.sendMessage}>
-                Chat
+                Send
             </Button>
             </div>
 
@@ -84,14 +64,18 @@ class GameLobby extends React.Component<Props> {
         );
     }
 
-    private sendMessage = () => {
-        const message = {
-            action: "send_message",
-            message: "hello",
-            game_id: this.props.match.params.gameID,
-            name: this.state.displayName
+    private handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        // enter key
+        if (event.keyCode === 13) {
+            this.sendMessage();
         }
-        this.socket.send(JSON.stringify(message))
+    }
+
+    private sendMessage = () => {
+        const text = this.chatInput.current ? this.chatInput.current.value : "";
+        if (text.length > 0) {
+            this.gameAPI.sendMessage(text);
+        }
     }
 }
 
