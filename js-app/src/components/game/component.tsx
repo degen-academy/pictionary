@@ -22,7 +22,8 @@ class GameLobby extends React.Component<Props> {
         this.state.displayName = this.props.location.state;
         this.gameAPI = new GameAPI({
             gameID: this.props.match.params.gameID,
-            displayName: this.state.displayName
+            displayName: this.state.displayName,
+            onMessage: this.onReceiveMessage,
         });
         this.chatInput = React.createRef<HTMLInputElement>();
     }
@@ -76,6 +77,10 @@ class GameLobby extends React.Component<Props> {
         if (text.length > 0) {
             this.gameAPI.sendMessage(text);
         }
+    }
+
+    private onReceiveMessage = (ev: MessageEvent) => {
+        console.log(event);
     }
 }
 

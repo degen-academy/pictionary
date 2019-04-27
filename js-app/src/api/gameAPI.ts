@@ -3,6 +3,7 @@ const wsURL = 'wss://auxhu82pyl.execute-api.us-west-2.amazonaws.com/dev';
 interface Props {
     gameID: string;
     displayName: string;
+    onMessage: (ev: MessageEvent) => void
 }
 
 class GameAPI {
@@ -12,10 +13,11 @@ class GameAPI {
     constructor(props:Props) {
         this.gameID = props.gameID;
         this.displayName = props.displayName;
+
         const socket = new WebSocket('wss://auxhu82pyl.execute-api.us-west-2.amazonaws.com/dev');
 
         socket.onopen = this.onOpen;
-        socket.onmessage = this.onMessage;
+        socket.onmessage = props.onMessage;
 
         this.socket = socket;
     }
@@ -37,10 +39,6 @@ class GameAPI {
             name: this.displayName,
         }
         this.socket.send(JSON.stringify(message));
-    }
-
-    private onMessage = (event: MessageEvent) => {
-        console.log(event)
     }
 }
 
