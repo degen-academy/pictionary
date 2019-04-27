@@ -1,6 +1,5 @@
 import React from "react";
 import { Button } from "@material-ui/core";
-import firebase from "firebase";
 import { RouteComponentProps } from "react-router";
 
 // hard-coded players
@@ -18,15 +17,18 @@ interface MatchParams {
 }
 
 interface Props extends RouteComponentProps<MatchParams> {
+    displayName: string;
 }
 
 class GameLobby extends React.Component<Props> {
+
     render() {
-        const currentUser = firebase.auth().currentUser;
-        var message = <div>"please log in"</div>;
-        if (currentUser) {
-            message = <h2>Joined the lobby as "{currentUser.displayName}"</h2>;
+        const displayName = this.props.location.state;
+        if (!displayName) {
+            return <h2>Please log in</h2>
         }
+
+        const message = <h2>Joined the lobby as "{displayName}"</h2>;
 
         return (
         <div>
