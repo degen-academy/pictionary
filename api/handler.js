@@ -8,22 +8,70 @@ const apigatewaymanagementapi = new AWS.ApiGatewayManagementApi({
   endpoint: "https://auxhu82pyl.execute-api.us-west-2.amazonaws.com/dev"
 });
 
-module.exports.connect = async event => ({
-  statusCode: 200,
-  body: JSON.stringify({
-    message: 'connected to server',
-    input: event,
-  }),
-});
+module.exports.connect = async event => {
+  const connectionId = event.requestContext.connectionId;
+  const params = {
+    Item: {
+      PK: {
+        S: 'connection_id',
+      },
+      SK: {
+        S: `${connectionId}`
+      },
+    },
+    TableName: TABLE,
+  };
+  try {
+    const data = await dynamodb.putItem(params).promise();
+    console.log(`createChatMessage data=${JSON.stringify(data)}`);
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: 'added connection to db',
+        input: event,
+      })
+    };
+  } catch (error) {
+    console.log(`connect ERROR=${error.stack}`);
+    return {
+      statusCode: 400,
+      error: `Could not create connection: ${error.stack}`,
+    };
+  }
+};
 
 
-module.exports.disconnect = async event => ({
-  statusCode: 200,
-  body: JSON.stringify({
-    message: 'disconnected from server',
-    input: event,
-  }),
-});
+module.exports.disconnect = async event => {
+  const connectionId = event.requestContext.connectionId;
+  const params = {
+    Item: {
+      PK: {
+        S: 'connection_id',
+      },
+      SK: {
+        S: `${connectionId}`
+      },
+    },
+    TableName: TABLE,
+  };
+  try {
+    const data = await dynamodb.deleteItem(params).promise();
+    console.log(`createChatMessage data=${JSON.stringify(data)}`);
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: 'deleted connection from db',
+        input: event,
+      })
+    };
+  } catch (error) {
+    console.log(`disconnect ERROR=${error.stack}`);
+    return {
+      statusCode: 400,
+      error: `Could not remove connection: ${error.stack}`,
+    };
+  }
+};
 
 // {"action": "send_message", "message": "hello", "game_id": "mygameid", "name": "chirashi"}
 module.exports.send_message = async event => {
@@ -135,3 +183,5 @@ module.exports.join = async (event) => {
     };
   }
 };
+
+
