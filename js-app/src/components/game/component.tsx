@@ -93,11 +93,14 @@ class GameLobby extends React.Component<Props, State> {
         if (!this.chatInput.current) {
             return;
         }
-        const text = this.chatInput.current.value;
-        if (text.length > 0) {
-            this.gameAPI.sendMessage(text);
+        const message = this.chatInput.current.value;
+        if (message.length > 0) {
+            this.gameAPI.sendMessage(message);
             this.chatInput.current.value = '';
         }
+        this.setState((prev:State) => ({
+            messageHistory: [...prev.messageHistory, {name: this.state.displayName, message}]
+        }));
     }
 
 
