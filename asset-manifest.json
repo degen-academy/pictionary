@@ -1,13 +1,13 @@
 {
   "main.css": "/pictionary/static/css/main.088358fd.chunk.css",
-  "main.js": "/pictionary/static/js/main.2bab5af3.chunk.js",
-  "main.js.map": "/pictionary/static/js/main.2bab5af3.chunk.js.map",
+  "main.js": "/pictionary/static/js/main.98d1d587.chunk.js",
+  "main.js.map": "/pictionary/static/js/main.98d1d587.chunk.js.map",
   "runtime~main.js": "/pictionary/static/js/runtime~main.2977027c.js",
   "runtime~main.js.map": "/pictionary/static/js/runtime~main.2977027c.js.map",
-  "static/js/2.88deb12e.chunk.js": "/pictionary/static/js/2.88deb12e.chunk.js",
-  "static/js/2.88deb12e.chunk.js.map": "/pictionary/static/js/2.88deb12e.chunk.js.map",
+  "static/js/2.0627a86b.chunk.js": "/pictionary/static/js/2.0627a86b.chunk.js",
+  "static/js/2.0627a86b.chunk.js.map": "/pictionary/static/js/2.0627a86b.chunk.js.map",
   "index.html": "/pictionary/index.html",
-  "precache-manifest.677b24d5ed508764a1550150980b7906.js": "/pictionary/precache-manifest.677b24d5ed508764a1550150980b7906.js",
+  "precache-manifest.ffc34b5c88891dabb45a092394613831.js": "/pictionary/precache-manifest.ffc34b5c88891dabb45a092394613831.js",
   "service-worker.js": "/pictionary/service-worker.js",
   "static/css/main.088358fd.chunk.css.map": "/pictionary/static/css/main.088358fd.chunk.css.map"
 }
