@@ -111,21 +111,74 @@ class GameLobby extends React.Component<Props, State> {
             width: 500,
             height: 500,
         });
-        
-          // set properties
-          cfd.setLineWidth(10); // in px
-          cfd.setStrokeColor([0, 0, 255]);
-          this.myStream =(el as CanvasElement).captureStream(30);
-          const recorder = new MediaRecorder(this.myStream);
-          const allChunks = [];
-            recorder.ondataavailable = function(e) {
-            allChunks.push(e.data);
-           }
-          
-           if (this.myVideoElement.current !== null) {
-               this.myVideoElement.current.srcObject = this.myStream;
-           }
+    
+        // set properties
+        cfd.setLineWidth(10); // in px
+        cfd.setStrokeColor([0, 0, 255]);
+        this.myStream =(el as CanvasElement).captureStream(30);
+        const recorder = new MediaRecorder(this.myStream, {mimeType: 'video/webm;codecs=vp8'});
+        const allChunks = [];
+      
+        const mediaSource = new MediaSource(); 
 
+        let sbuf;
+        let updateend = 0;
+        let queue = [];
+        mediaSource.addEventListener('sourceopen', function(e) {
+            sbuf = mediaSource.addSourceBuffer('video/webm;codecs="vp8"');
+            sbuf.addEventListener('updateend', function(e) {
+                updateend++;
+                console.log(`update end: ${updateend}`)
+                console.log(mediaSource.readyState)
+                if (queue.length > 0) {
+                    sbuf.appendBuffer(queue.shift() as Uint8Array)
+                }
+            }, false);
+        }, false);
+       
+
+        let ondata = 0;
+
+        const video = document.querySelector('video');
+
+
+        const dataavailable = (e) => {
+
+        let fr = new FileReader();
+            fr.onloadend = function(e){
+                console.log(e)
+                let res = new Uint8Array(fr.result as ArrayBuffer);
+                if (sbuf.updating) {
+                    queue.push(res)
+                } else {
+                    sbuf.appendBuffer(res);
+                }
+                ondata++;
+                console.log(`ondata: ${ondata}`);
+                if (video.paused) {
+                    video.play();
+                }
+
+            }
+            fr.readAsArrayBuffer(e.data);
+            allChunks.push(e);
+            
+        }
+        recorder.ondataavailable = (e) => {
+            dataavailable(e);
+        }
+
+
+        // start stream
+        recorder.start(500);
+        
+        video.autoplay = true;
+        video.src = URL.createObjectURL(mediaSource);
+        console.log('video: ')
+        console.log(video);
+        video.play();
+        console.log(mediaSource.activeSourceBuffers)
+        console.log(mediaSource.readyState)
     }
 
     private handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
