@@ -4,6 +4,11 @@ import { RouteComponentProps } from "react-router";
 import GameAPI from "../../api/gameAPI";
 import CanvasFreeDrawing from "canvas-free-drawing";
 
+declare var MediaRecorder: any;
+interface CanvasElement extends HTMLCanvasElement {
+    captureStream(int): any;
+ }
+  
 
 interface MatchParams {
   gameID: string;
@@ -25,6 +30,9 @@ interface chatLine {
 
 class GameLobby extends React.Component<Props, State> {
     myCanvas: HTMLCanvasElement | null;
+    myRecordingCanvasRef: React.RefObject<HTMLCanvasElement>;
+    myVideoElement: React.RefObject<HTMLVideoElement>;
+    myStream: MediaStream;
     gameAPI: GameAPI;
     chatInput: React.RefObject<HTMLInputElement>;
     constructor(props: Props) {
@@ -40,6 +48,9 @@ class GameLobby extends React.Component<Props, State> {
         });
         this.chatInput = React.createRef<HTMLInputElement>();
         this.myCanvas = null;
+        this.myRecordingCanvasRef = React.createRef<HTMLCanvasElement>();
+        this.myVideoElement = React.createRef<HTMLVideoElement>();
+
     }
 
     render() {
@@ -78,8 +89,8 @@ class GameLobby extends React.Component<Props, State> {
             </Button>
 
             <canvas id="cfd" style={{border: '1px solid black'}} ref={this.setCanvasRef}/>
-            <canvas id="cfd2" style={{border: '1px solid red'}}/>
- 
+            <canvas id="cfd2" style={{border: '1px solid red'}} ref={this.myRecordingCanvasRef} />
+            <video style={{border: '1px solid blue', width: 500, height: 500}} ref={this.myVideoElement} />
             {h}
 
             </div>
@@ -95,10 +106,26 @@ class GameLobby extends React.Component<Props, State> {
             width: 500,
             height: 500,
           });
+        const cfd2 = new CanvasFreeDrawing({
+            elementId: 'cfd2',
+            width: 500,
+            height: 500,
+        });
         
           // set properties
           cfd.setLineWidth(10); // in px
           cfd.setStrokeColor([0, 0, 255]);
+          this.myStream =(el as CanvasElement).captureStream(30);
+          const recorder = new MediaRecorder(this.myStream);
+          const allChunks = [];
+            recorder.ondataavailable = function(e) {
+            allChunks.push(e.data);
+           }
+          
+           if (this.myVideoElement.current !== null) {
+               this.myVideoElement.current.srcObject = this.myStream;
+           }
+
     }
 
     private handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
