@@ -2302,6 +2302,11 @@ caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000918, caniuse-lite@^1.0.30000929, can
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000941.tgz#f0810802b2ab8d27f4b625d4769a610e24d5a42c"
   integrity sha512-4vzGb2MfZcO20VMPj1j6nRAixhmtlhkypM4fL4zhgzEucQIYiRzSqPcWIu1OF8i0FETD93FMIPWfUJCAcFvrqA==
 
+canvas-free-drawing@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/canvas-free-drawing/-/canvas-free-drawing-2.0.4.tgz#e7291e48cf033291d0fbddb9c7ecab46343cee1d"
+  integrity sha512-TsOyyYDVJFGLFVPCd2K7mPnCnKMnEJZdshkXJ+Og7Ok/aaOpMjZr421evdSyVigC4ELWQKLWpKlwD/W1yoJ1Ag==
+
 capture-exit@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/capture-exit/-/capture-exit-1.2.0.tgz#1c5fcc489fd0ab00d4f1ac7ae1072e3173fbab6f"

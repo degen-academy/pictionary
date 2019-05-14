@@ -2,6 +2,8 @@ import React from "react";
 import { Button, TextField } from "@material-ui/core";
 import { RouteComponentProps } from "react-router";
 import GameAPI from "../../api/gameAPI";
+import CanvasFreeDrawing from "canvas-free-drawing";
+
 
 interface MatchParams {
   gameID: string;
@@ -22,7 +24,7 @@ interface chatLine {
 }
 
 class GameLobby extends React.Component<Props, State> {
-
+    myCanvas: HTMLCanvasElement | null;
     gameAPI: GameAPI;
     chatInput: React.RefObject<HTMLInputElement>;
     constructor(props: Props) {
@@ -37,6 +39,7 @@ class GameLobby extends React.Component<Props, State> {
             onMessage: this.onReceiveMessage,
         });
         this.chatInput = React.createRef<HTMLInputElement>();
+        this.myCanvas = null;
     }
 
     render() {
@@ -73,12 +76,29 @@ class GameLobby extends React.Component<Props, State> {
             <Button variant="contained" color="primary" onClick={this.sendMessage}>
                 Send
             </Button>
+
+            <canvas id="cfd" style={{border: '1px solid black'}} ref={this.setCanvasRef}/>
+            <canvas id="cfd2" style={{border: '1px solid red'}}/>
+ 
             {h}
 
             </div>
 
         </div>
         );
+    }
+
+    private setCanvasRef = (el:HTMLCanvasElement) => {
+        this.myCanvas = el;
+        const cfd = new CanvasFreeDrawing({
+            elementId: 'cfd',
+            width: 500,
+            height: 500,
+          });
+        
+          // set properties
+          cfd.setLineWidth(10); // in px
+          cfd.setStrokeColor([0, 0, 255]);
     }
 
     private handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
