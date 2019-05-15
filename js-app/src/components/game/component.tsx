@@ -143,22 +143,25 @@ class GameLobby extends React.Component<Props, State> {
     let sourceBuffer;
     let updateend = 0;
     let queue = [];
-    mediaSource.addEventListener(
-      "sourceopen",
-      function(e) {
-        sourceBuffer = mediaSource.addSourceBuffer('video/webm;codecs="vp8"');
-        sourceBuffer.addEventListener(
-          "updateend",
-          function(e) {
-            if (queue.length > 0 && !sourceBuffer.updating) {
-              sourceBuffer.appendBuffer(queue.shift());
-            }
-          },
-          true
-        );
-      },
-      true
-    );
+
+    const createSourceBuffer = (e: Event) => {
+      sourceBuffer = mediaSource.addSourceBuffer('video/webm;codecs="vp8"');
+      sourceBuffer.addEventListener(
+        "updateend",
+        function(e) {
+          if (queue.length > 0 && !sourceBuffer.updating) {
+            sourceBuffer.appendBuffer(queue.shift());
+          }
+        },
+        true
+      );
+    };
+
+    const removeSourceBuffer = () => {
+      mediaSource.removeSourceBuffer(sourceBuffer);
+    };
+
+    mediaSource.addEventListener("sourceopen", createSourceBuffer, true);
 
     mediaSource.addEventListener("sourceopen", function(e) {
       console.log("m sourceopen: " + mediaSource.readyState);
@@ -259,20 +262,16 @@ class GameLobby extends React.Component<Props, State> {
       //   console.log(allChunks);
     };
 
-    const flushevents = e => {
-      console.log("flushing");
-    };
-
-    setInterval(flushevents, 1000);
-
     el.addEventListener("mouseup", e => {
-      recorder.requestData();
+      recorder.requestData(1000);
       recorder.pause();
     });
     el.addEventListener("mousedown", e => {
-      recorder.requestData();
+      //   recorder.requestData();
       if (recorder.state === "paused") {
         recorder.resume();
+      } else if (recorder.state !== "recording") {
+        recorder.start(1000);
       }
     });
     recorder.ondataavailable = (e: any) => {
@@ -280,12 +279,16 @@ class GameLobby extends React.Component<Props, State> {
       mirrorCanvas(e);
     };
 
+    recorder.onpause = () => {
+      console.log("pause");
+    };
+
     // setInterval(() => {
-    //   recorder.requestData();
-    // }, 500);
+    //   if (recorder.state === "active") recorder.requestData(1000);
+    // }, 1000);
 
     // start stream
-    recorder.start(120);
+    // recorder.start(1000);
 
     video.autoplay = true;
     video.src = URL.createObjectURL(mediaSource);
